@@ -101,7 +101,6 @@
                         <h3 class="tech-category-title">Databases & Data</h3>
                         <ul class="tech-tags">
                             <li class="tech-tag">PostgreSQL</li>
-                            <li class="tech-tag">Cursor-based pagination</li>
                         </ul>
                     </div>
 
@@ -138,29 +137,26 @@
 
                     <article class="project-card">
                         <h3 class="project-title">Real-Time Chat Platform</h3>
-                        <p class="project-subtitle">Messaging system I built end to end — custom C++ server, React client, PostgreSQL, live deploy</p>
+                        <p class="project-subtitle">End-to-end messaging — custom C++ WebSocket server, React client, PostgreSQL, live in production</p>
                         <p class="project-description">
-                            Production-ready chat I built from scratch — backend first. The unusual work is the custom
-                            asynchronous TCP/WebSocket stack in C++: ordering under concurrency, JWT-backed sessions,
-                            PostgreSQL persistence, and scheduling so the WebSocket path stays responsive while
-                            database-heavy handlers run on worker threads. React client with optimistic sends and
-                            ACK reconciliation; shipped on Linux (nginx, systemd) and Android (Capacitor).
+                            Built a production chat system from scratch without an application framework.
+                            The hard part is the backend: async TCP/WebSocket in C++, ordered delivery under concurrency,
+                            JWT sessions, PostgreSQL, and scheduling that keeps the socket path responsive while
+                            database work runs on worker threads.
                         </p>
                         <p class="project-bullets-label">Key engineering work</p>
                         <ul class="project-bullets">
-                            <li>Custom async networking stack (Boost.Asio, Boost.Beast) — framing, sessions, lifecycle; no framework server</li>
-                            <li>Ordered message delivery and concurrency control across overlapping requests and background work</li>
-                            <li>Dispatch and scheduling that isolate PostgreSQL-backed handlers from the WebSocket hot path</li>
-                            <li>Cursor-based pagination over large histories (getBefore / getAfter)</li>
-                            <li>JWT authentication, session binding, and authenticated WebSocket upgrades</li>
-                            <li>Optimistic UI in React with server acknowledgement reconciliation</li>
-                            <li>Presence, typing indicators, seen receipts, and media upload lifecycle</li>
-                            <li>Production Linux deploy (systemd, nginx); Android packaging via Capacitor</li>
+                            <li>Custom async stack (Boost.Asio, Boost.Beast) — sessions, framing, lifecycle; no framework server</li>
+                            <li>Ordered delivery and concurrency control across parallel requests and background work</li>
+                            <li>WebSocket hot path isolated from PostgreSQL-backed handlers</li>
+                            <li>JWT-authenticated WebSocket upgrades and persistent chat data</li>
+                            <li>React optimistic UI with server ACK reconciliation</li>
+                            <li>Presence, typing, seen receipts, media uploads; Linux (nginx, systemd) and Android (Capacitor)</li>
                         </ul>
                         <p class="project-tech"><strong>Stack:</strong> C++, Boost.Asio, Boost.Beast, PostgreSQL, pqxx, React, Vite, JWT, Capacitor</p>
                         <div class="project-links">
-                            <a href="{project-demo-url}" target="_blank" rel="noopener">Live app →</a>
-                            <a href="{project-repo-url}" target="_blank" rel="noopener">Source code →</a>
+                            <a href="https://connectroom.duckdns.org/" target="_blank" rel="noopener">Live app →</a>
+                            <a href="https://github.com/davidzdravkovic/ChatRoom" target="_blank" rel="noopener">Source code →</a>
                         </div>
                     </article>
 

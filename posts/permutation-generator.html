@@ -131,6 +131,18 @@ n=11 count=39916800  expected=39916800  -&gt; OK</code></pre>
                 if (a) setOpen(false);
             });
 
+            document.addEventListener('click', (e) => {
+                if (!nav.classList.contains('nav--open')) return;
+                if (nav.contains(e.target)) return;
+                setOpen(false);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                if (!nav.classList.contains('nav--open')) return;
+                setOpen(false);
+            });
+
             window.addEventListener('resize', () => {
                 if (window.matchMedia('(min-width: 768px)').matches) setOpen(false);
             });

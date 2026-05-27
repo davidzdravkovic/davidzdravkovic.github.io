@@ -235,8 +235,8 @@
         (() => {
             const nav = document.querySelector('.nav');
             const toggle = document.querySelector('.nav-toggle');
-            const links = document.getElementById('nav-links');
-            if (!nav || !toggle || !links) return;
+            const linkList = document.getElementById('nav-links');
+            if (!nav || !toggle || !linkList) return;
 
             const setOpen = (open) => {
                 nav.classList.toggle('nav--open', open);
@@ -247,14 +247,61 @@
                 setOpen(!nav.classList.contains('nav--open'));
             });
 
-            links.addEventListener('click', (e) => {
+            linkList.addEventListener('click', (e) => {
                 const a = e.target.closest('a');
                 if (a) setOpen(false);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!nav.classList.contains('nav--open')) return;
+                if (nav.contains(e.target)) return;
+                setOpen(false);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape') return;
+                if (!nav.classList.contains('nav--open')) return;
+                setOpen(false);
             });
 
             window.addEventListener('resize', () => {
                 if (window.matchMedia('(min-width: 768px)').matches) setOpen(false);
             });
+
+            /** Highlight nav item for the section currently under the sticky bar */
+            const navAnchors = linkList.querySelectorAll('a[href^="#"]');
+            let scrollTick = false;
+
+            function syncSectionNavHighlight() {
+                scrollTick = false;
+                const bottom = nav.getBoundingClientRect().bottom + 6;
+                let activeId = '';
+                navAnchors.forEach((a) => {
+                    const hash = a.getAttribute('href');
+                    if (!hash || hash === '#') return;
+                    const el = document.getElementById(hash.slice(1));
+                    if (!el) return;
+                    if (el.getBoundingClientRect().top <= bottom) activeId = hash.slice(1);
+                });
+                navAnchors.forEach((a) => {
+                    const id = a.getAttribute('href').slice(1);
+                    const on = id === activeId && activeId !== '';
+                    a.classList.toggle('nav-link--active', on);
+                    if (on) a.setAttribute('aria-current', 'true');
+                    else a.removeAttribute('aria-current');
+                });
+            }
+
+            function onScrollOrResize() {
+                if (!scrollTick) {
+                    scrollTick = true;
+                    requestAnimationFrame(syncSectionNavHighlight);
+                }
+            }
+
+            window.addEventListener('scroll', onScrollOrResize, { passive: true });
+            window.addEventListener('resize', onScrollOrResize);
+            syncSectionNavHighlight();
         })();
     </script>
 

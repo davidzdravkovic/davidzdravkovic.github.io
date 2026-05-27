@@ -220,6 +220,10 @@ blockquote {
     font-size: 0.9rem;
 }
 .nav-links a:hover { color: var(--accent); }
+.nav-links a.nav-link--active {
+    color: var(--accent);
+    font-weight: 600;
+}
 
 /* Horizontal nav on wide viewports (tablets / desktop) */
 @media (min-width: 768px) {

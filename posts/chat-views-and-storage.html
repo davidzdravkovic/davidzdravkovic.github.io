@@ -11,8 +11,16 @@
 
     <nav class="nav">
         <div class="container nav-inner">
-            <a href="../index.html" class="nav-brand">David Zdravkovic</a>
-            <ul class="nav-links">
+            <div class="nav-mobile-header">
+                <a href="../index.html" class="nav-brand">David Zdravkovic</a>
+                <button class="nav-toggle" type="button" aria-controls="nav-links" aria-expanded="false">
+                    <span class="nav-toggle-text">Menu</span>
+                    <span class="nav-toggle-bars" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
+                </button>
+            </div>
+            <ul class="nav-links" id="nav-links">
                 <li><a href="../index.html#about">About</a></li>
                 <li><a href="../index.html#projects">Projects</a></li>
                 <li><a href="../index.html#writing">Writing</a></li>
@@ -83,6 +91,33 @@
             <p><a href="../index.html">← Back to home</a></p>
         </div>
     </footer>
+
+    <script>
+        (() => {
+            const nav = document.querySelector('.nav');
+            const toggle = document.querySelector('.nav-toggle');
+            const links = document.getElementById('nav-links');
+            if (!nav || !toggle || !links) return;
+
+            const setOpen = (open) => {
+                nav.classList.toggle('nav--open', open);
+                toggle.setAttribute('aria-expanded', String(open));
+            };
+
+            toggle.addEventListener('click', () => {
+                setOpen(!nav.classList.contains('nav--open'));
+            });
+
+            links.addEventListener('click', (e) => {
+                const a = e.target.closest('a');
+                if (a) setOpen(false);
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.matchMedia('(min-width: 768px)').matches) setOpen(false);
+            });
+        })();
+    </script>
 
 </body>
 </html>

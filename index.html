@@ -11,10 +11,15 @@
 
     <nav class="nav">
         <div class="container nav-inner">
-            <a href="index.html" class="nav-brand">David Zdravkovic</a>
-            <button class="nav-toggle" type="button" aria-controls="nav-links" aria-expanded="false">
-                Menu
-            </button>
+            <div class="nav-mobile-header">
+                <a href="index.html" class="nav-brand">David Zdravkovic</a>
+                <button class="nav-toggle" type="button" aria-controls="nav-links" aria-expanded="false">
+                    <span class="nav-toggle-text">Menu</span>
+                    <span class="nav-toggle-bars" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
+                </button>
+            </div>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#about">About</a></li>
                 <li><a href="#technologies">Technologies</a></li>
@@ -248,7 +253,7 @@
             });
 
             window.addEventListener('resize', () => {
-                if (window.matchMedia('(min-width: 641px)').matches) setOpen(false);
+                if (window.matchMedia('(min-width: 768px)').matches) setOpen(false);
             });
         })();
     </script>

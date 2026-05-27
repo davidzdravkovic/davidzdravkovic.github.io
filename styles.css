@@ -176,6 +176,12 @@ blockquote {
 }
 .nav-links a:hover { color: var(--accent); }
 
+/* Force desktop behavior (defensive against caching / overrides) */
+@media (min-width: 769px) {
+    .nav-toggle { display: none !important; }
+    .nav-links { display: flex !important; }
+}
+
 /* =============================================================================
    Hero
 ============================================================================= */
@@ -591,19 +597,29 @@ blockquote {
     .post-title { font-size: 1.8rem; }
     .hero { padding: var(--space-5) 0 var(--space-4); }
     .section { padding: var(--space-5) 0; }
+    .nav-inner {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-2);
+    }
+    .nav-toggle { display: inline-flex; }
     .nav-links {
         display: none;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25rem;
-        font-size: 0.95rem;
         width: 100%;
+        flex-basis: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
         padding-top: var(--space-2);
         margin-top: var(--space-2);
         border-top: 1px solid var(--border);
     }
-    .nav-links a { display: block; padding: 0.5rem 0.25rem; }
-    .nav-toggle { display: inline-flex; }
+    .nav-links a {
+        display: block;
+        width: 100%;
+        padding: 0.65rem 0.25rem;
+    }
     .nav--open .nav-links { display: flex; }
     .projects-grid { grid-template-columns: 1fr; }
     .hero-tagline { font-size: 1rem; }

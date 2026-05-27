@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Client State Machine for Chat Message Order - David Zdravkovic</title>
+    <meta name="description" content="Layers, active chat, epoch, message storage, initial vs last view, and optimistic sends in my React chat client.">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="post-page">
+
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-brand">David Zdravkovic</a>
+            <ul class="nav-links">
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#projects">Projects</a></li>
+                <li><a href="../index.html#writing">Writing</a></li>
+                <li><a href="../index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <article>
+
+            <header class="post-header">
+                <a href="../index.html" class="back-link">← Back to home</a>
+                <h1 class="post-title">A Client State Machine for Chat Message Order</h1>
+            </header>
+
+            <div class="post-body">
+
+                <p>The client side is a kind of state machine for message order. Everything the user actually sees ends up in one place - the UI list - but messages arrive from many directions at different times, and they only reach the UI once they pass specific conditions. I built layers on top of layers: each layer applies its own rules on incoming and outgoing traffic, and each layer has a single job.</p>
+
+                <h2>Active chat</h2>
+
+                <p>The most obvious gate is the active chat - there can only be one. Only messages tied to that conversation are meant to drive the visible list.</p>
+
+                <p>Even that is not enough. I filter both stale pagination responses and live messages from the peer with a <strong>conversation epoch id</strong>: a unique id issued per chat opening. Checking the peer username against the active chat username alone failed in practice. The user can hop in and out of the same peer fast; a late response can still match the active peer by name and corrupt the current session. The epoch closes that hole: if the id does not match the open session, the payload is dropped.</p>
+
+                <h2>Initial fetch, anchor, and who drives the thread</h2>
+
+                <p>When the user selects a chat, the first response is an initial fetch. The server sends a page sized on the order of ~29 messages with an <strong>anchor</strong> somewhere in the middle. The anchor comes from the database: between the last sent message and the last seen message, the one with the larger <code>messageId</code> wins. That anchor is there to give the most recent context - the page is built upward and downward from it, up to 14 messages in each direction (so the user steers older traffic with scroll-up and newer traffic the other way).</p>
+
+                <h2>Message storage and reconciliation</h2>
+
+                <p>Early on page load I eagerly create a buffer per peer called <strong>message storage</strong>. Regardless of which chat is active, storage keeps the last window of received messages for that peer (up to 14). When the initial fetch returns, the &quot;last messages&quot; block from the response is <strong>reconciled</strong> with that buffer by <code>messageId</code>, so storage always tracks the latest tail for that peer.</p>
+
+                <h2>Initial view and last view</h2>
+
+                <p>The active chat is not fully defined until that first response arrives. The payload carries two parts: the initial page around the anchor, and the last-messages block.</p>
+
+                <p>To decide the <strong>view</strong>, I take the last <code>messageId</code> from the initial page in the fetch and compare it to the first message in storage after reconciliation (the smallest id in the buffer window). If the id from the initial block is larger, the session moves to <strong>last view</strong>. When the switch happens, the client treats the reconciled storage window as the live tail and uses it as the base set of messages for the UI, so the list is now in sync with storage. In last view, incoming peer messages can flow to the UI instead of only sitting in storage.</p>
+
+                <p>There are two other ways into last view: scrolling down (append fetch), and writing a message.</p>
+
+                <p>On append fetch, the rule is the same kind of comparison - the last message id from the appended page against the first id in message storage. When the append carries a message id larger than that storage bound, the chat switches to last view.</p>
+
+                <figure class="wide">
+                    <img src="../images/chat-client-flow.png" width="860" height="560" alt="Data flow through storage, temporary buffer, and UI.">
+                    <figcaption><strong>Figure - Data flow.</strong> Fetch and ACK paths reconcile into storage; the UI only follows storage for peer traffic in last view; optimistic sends hit the UI immediately then move through temporary storage until ACK.</figcaption>
+                </figure>
+
+                <h2>Writing a message (optimistic, no message id yet)</h2>
+
+                <p>Sending is the hardest case because ordering is normally anchored on <code>messageId</code>, and an optimistic send does not have one yet - only a <strong>temporary id</strong>. So it cannot be reconciled straight into message storage like normal rows. It still belongs on screen right away, which is why optimistic messages are shown in the UI immediately after send.</p>
+
+                <p>I keep a <strong>temporary storage</strong> scoped to the client for that write. When the server ACK returns the real id, the row leaves temporary storage and is inserted into message storage. Once temporary storage is drained for that burst of sends, it goes away.</p>
+
+                <p>Sending cannot happen while the initial fetch is in flight - I disable the send button until the first response defines the chat session. But append and prepend fetches <em>can</em> be in flight while the user is typing and sending, and those fetches can still race live traffic. Optimistic messages are stored in temporary storage, and when an in-flight fetch finishes and the client continues its merge logic, the optimistic rows are reconciled by swapping the temporary id with the real <code>messageId</code> from the ACK, then inserting into message storage.</p>
+
+                <h2>Server ordering</h2>
+
+                <p>The server still decides order on the wire and in the database. These layers only decide what reaches the UI and in what order they are allowed to merge. I wrote separately about <a href="message-ordering.html">ordering on the server</a>.</p>
+
+            </div>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><a href="../index.html">← Back to home</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

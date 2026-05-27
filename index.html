@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David Zdravkovic — Software Developer</title>
+    <meta name="description" content="David Zdravkovic — software developer building real-time systems in C++ and React. Deployed a WebSocket chat server serving live users.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="index.html" class="nav-brand">David Zdravkovic</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#technologies">Technologies</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#writing">Writing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1 class="hero-title">David Zdravkovic</h1>
+            <p class="hero-subtitle">Software Developer</p>
+            <p class="hero-tagline">I build real-time networked applications from the ground up — server, client, and the algorithms underneath.</p>
+            <div class="hero-cta">
+                <a href="#projects" class="hero-btn">View Projects</a>
+                <a href="#contact" class="hero-btn hero-btn--ghost">Get in Touch</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title">About</h2>
+                <div class="about-text">
+                    <p>
+                        I am a software developer based in Skopje, Macedonia.
+                        I build real-time networked applications and the algorithms underneath them —
+                        without frameworks doing the heavy lifting.
+                    </p>
+                    <p>
+                        When I design something I start from what must always be true — the invariant —
+                        then build the smallest piece that guarantees it, then compose outward. The same
+                        discipline that produced correct message ordering on the server produced correct
+                        view merging and optimistic reconciliation on the client. See the <a href="#writing">writing</a>
+                        section for worked examples.
+                    </p>
+                    <p>
+                        My main language is C++. I also write JavaScript and React for the client side,
+                        and I have shipped a production Android app using Capacitor.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="technologies" class="section">
+            <div class="container">
+                <h2 class="section-title">Technologies & Skills</h2>
+
+                <div class="tech-categories">
+
+                    <div class="tech-category">
+                        <h3 class="tech-category-title">Languages</h3>
+                        <ul class="tech-tags">
+                            <li class="tech-tag">C++</li>
+                            <li class="tech-tag">JavaScript</li>
+                            <li class="tech-tag">SQL</li>
+                            <li class="tech-tag">HTML5</li>
+                            <li class="tech-tag">CSS3</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-category" data-accent="purple">
+                        <h3 class="tech-category-title">Frameworks & Libraries</h3>
+                        <ul class="tech-tags">
+                            <li class="tech-tag">Boost.Asio</li>
+                            <li class="tech-tag">Boost.Beast</li>
+                            <li class="tech-tag">React 18</li>
+                            <li class="tech-tag">Capacitor</li>
+                            <li class="tech-tag">Vite</li>
+                            <li class="tech-tag">pqxx</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-category" data-accent="green">
+                        <h3 class="tech-category-title">Databases & Data</h3>
+                        <ul class="tech-tags">
+                            <li class="tech-tag">PostgreSQL</li>
+                            <li class="tech-tag">Cursor-based pagination</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-category" data-accent="orange">
+                        <h3 class="tech-category-title">Tools & Infrastructure</h3>
+                        <ul class="tech-tags">
+                            <li class="tech-tag">Git</li>
+                            <li class="tech-tag">CMake</li>
+                            <li class="tech-tag">systemd</li>
+                            <li class="tech-tag">nginx</li>
+                            <li class="tech-tag">Linux</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-category">
+                        <h3 class="tech-category-title">Focus Areas</h3>
+                        <ul class="tech-tags">
+                            <li class="tech-tag">Real-time Systems</li>
+                            <li class="tech-tag">Async Networking</li>
+                            <li class="tech-tag">Algorithm Design</li>
+                            <li class="tech-tag">Concurrent Programming</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title">Projects</h2>
+
+                <div class="projects-grid">
+
+                    <article class="project-card">
+                        <h3 class="project-title">Real-Time Chat Platform</h3>
+                        <p class="project-subtitle">Messaging system I built end to end — custom C++ server, React client, PostgreSQL, live deploy</p>
+                        <p class="project-description">
+                            Production-ready chat I built from scratch — backend first. The unusual work is the custom
+                            asynchronous TCP/WebSocket stack in C++: ordering under concurrency, JWT-backed sessions,
+                            PostgreSQL persistence, and scheduling so the WebSocket path stays responsive while
+                            database-heavy handlers run on worker threads. React client with optimistic sends and
+                            ACK reconciliation; shipped on Linux (nginx, systemd) and Android (Capacitor).
+                        </p>
+                        <p class="project-bullets-label">Key engineering work</p>
+                        <ul class="project-bullets">
+                            <li>Custom async networking stack (Boost.Asio, Boost.Beast) — framing, sessions, lifecycle; no framework server</li>
+                            <li>Ordered message delivery and concurrency control across overlapping requests and background work</li>
+                            <li>Dispatch and scheduling that isolate PostgreSQL-backed handlers from the WebSocket hot path</li>
+                            <li>Cursor-based pagination over large histories (getBefore / getAfter)</li>
+                            <li>JWT authentication, session binding, and authenticated WebSocket upgrades</li>
+                            <li>Optimistic UI in React with server acknowledgement reconciliation</li>
+                            <li>Presence, typing indicators, seen receipts, and media upload lifecycle</li>
+                            <li>Production Linux deploy (systemd, nginx); Android packaging via Capacitor</li>
+                        </ul>
+                        <p class="project-tech"><strong>Stack:</strong> C++, Boost.Asio, Boost.Beast, PostgreSQL, pqxx, React, Vite, JWT, Capacitor</p>
+                        <div class="project-links">
+                            <a href="{project-demo-url}" target="_blank" rel="noopener">Live app →</a>
+                            <a href="{project-repo-url}" target="_blank" rel="noopener">Source code →</a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="writing" class="section">
+            <div class="container">
+                <h2 class="section-title">Technical Blog</h2>
+                <p class="section-tagline">Writing connected to the chat application: server correctness and client-side state.</p>
+
+                <ul class="posts-list">
+
+                    <li>
+                        <a href="posts/chat-views-and-storage.html" class="post-card">
+                            <span class="post-category">Frontend</span>
+                            <h3 class="post-card-title">A Client State Machine for Chat Message Order</h3>
+                            <p class="post-card-excerpt">
+                                Layers before the UI: active chat, epoch, message storage, initial vs last view, and optimistic sends without a message id yet.
+                            </p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="posts/message-ordering.html" class="post-card">
+                            <span class="post-category">Concurrency</span>
+                            <h3 class="post-card-title">Ordering Messages in a Concurrent C++ WebSocket Server</h3>
+                            <p class="post-card-excerpt">
+                                Where message order holds in my chat server pipeline, and where worker threads break it.
+                            </p>
+                        </a>
+                    </li>
+
+                    <!-- Add new posts above. Newest first. -->
+
+                </ul>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title">Contact</h2>
+                <div class="contact-grid">
+
+                    <div class="contact-block">
+                        <h3 class="contact-block-title">Location</h3>
+                        <p>Skopje, Macedonia</p>
+                        <p class="contact-block-sub">Central European Time (UTC+02)</p>
+                        <p class="contact-block-sub">Open to remote opportunities</p>
+                    </div>
+
+                    <div class="contact-block">
+                        <h3 class="contact-block-title">Reach Me</h3>
+                        <p><a href="mailto:{your-email@example.com}">{your-email@example.com}</a></p>
+                        <p><a href="https://github.com/davidzdravkovic" target="_blank" rel="noopener">github.com/davidzdravkovic</a></p>
+                        <p><a href="https://linkedin.com/in/{linkedin-username}" target="_blank" rel="noopener">linkedin.com/in/{linkedin-username}</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 David Zdravkovic</p>
+        </div>
+    </footer>
+
+</body>
+</html>

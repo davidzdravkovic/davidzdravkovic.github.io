@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 560" width="860" height="560">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <style>
+    .node { fill: #fff; stroke: #334155; stroke-width: 2; }
+    .hub { fill: #f8fafc; }
+    .ui { fill: #eff6ff; }
+    .temp { fill: #fffbeb; }
+    .t { font: 600 13px Segoe UI, system-ui, Arial, sans-serif; fill: #0f172a; }
+    .s { font: 400 10px Segoe UI, system-ui, Arial, sans-serif; fill: #64748b; }
+    .e { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    .leg { font: 400 11px Segoe UI, system-ui, Arial, sans-serif; fill: #475569; }
+  </style>
+
+  <!-- === nodes (hand-drawn structure) === -->
+
+  <rect class="node hub" x="330" y="24" width="200" height="40" rx="8"/>
+  <text class="t" x="430" y="49" text-anchor="middle">Peer writes message</text>
+
+  <rect class="node hub" x="300" y="108" width="260" height="52" rx="8"/>
+  <text class="t" x="430" y="132" text-anchor="middle">Storage messages</text>
+  <text class="s" x="430" y="148" text-anchor="middle">per client</text>
+
+  <rect class="node ui" x="210" y="360" width="440" height="72" rx="10"/>
+  <text class="t" x="430" y="402" text-anchor="middle">Messages on UI</text>
+
+  <rect class="node hub" x="36" y="108" width="200" height="52" rx="8"/>
+  <text class="t" x="136" y="128" text-anchor="middle">Server initial fetch</text>
+  <text class="s" x="136" y="146" text-anchor="middle">initial + last messages</text>
+
+  <rect class="node hub" x="64" y="448" width="144" height="40" rx="8"/>
+  <text class="t" x="136" y="473" text-anchor="middle">User selects chat</text>
+
+  <rect class="node temp" x="600" y="108" width="200" height="52" rx="8"/>
+  <text class="t" x="700" y="132" text-anchor="middle">Temporary optimistic</text>
+  <text class="s" x="700" y="148" text-anchor="middle">messages</text>
+
+  <rect class="node hub" x="760" y="108" width="88" height="52" rx="8"/>
+  <text class="t" x="804" y="132" text-anchor="middle">Server ACK</text>
+  <text class="s" x="804" y="148" text-anchor="middle">messageId</text>
+
+  <rect class="node hub" x="628" y="448" width="168" height="40" rx="8"/>
+  <text class="t" x="712" y="473" text-anchor="middle">User writes message</text>
+
+  <!-- === edges (orthogonal, no labels on lines) === -->
+
+  <path class="e" d="M 430 64 L 430 108"/>
+  <path class="e" d="M 136 448 L 136 160"/>
+  <path class="e" d="M 236 134 L 300 134"/>
+  <path class="e" d="M 430 160 L 430 360"/>
+  <path class="e" d="M 628 488 L 520 488 L 520 360"/>
+  <path class="e" d="M 712 448 L 712 160"/>
+  <path class="e" d="M 796 448 L 804 448 L 804 160"/>
+  <path class="e" d="M 760 134 L 800 134"/>
+  <path class="e" d="M 600 134 L 560 134"/>
+
+  <!-- === legend === -->
+  <line x1="48" y1="500" x2="812" y2="500" stroke="#e2e8f0" stroke-width="1"/>
+  <text class="leg" x="48" y="518">Arrows: reconcile (fetch + ACK) | storage to UI if last_view | optimistic to UI | send | swap tempId</text>
+  <text class="leg" x="48" y="536">User write may set last_view, or pendingSeed if initial fetch is still in flight.</text>
+</svg>

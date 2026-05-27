@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designing a Permutation Generator From Its Invariant — David Zdravkovic</title>
+    <meta name="description" content="A worked example of how I derive algorithms from invariants. Blocks protect local invariants; orchestration is the system design.">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="post-page">
+
+    <nav class="nav">
+        <div class="container nav-inner">
+            <a href="../index.html" class="nav-brand">David Zdravkovic</a>
+            <ul class="nav-links">
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#projects">Projects</a></li>
+                <li><a href="../index.html#writing">Writing</a></li>
+                <li><a href="../index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <article>
+
+            <header class="post-header">
+                <a href="../index.html" class="back-link">← Back to home</a>
+                <h1 class="post-title">Designing a Permutation Generator From Its Invariant</h1>
+                <p class="post-meta">Published {YYYY-MM-DD} · 8 min read</p>
+            </header>
+
+            <div class="post-body">
+
+                <p>This post describes how I built a permutation generator by first understanding what any correct solution must satisfy, then designing around that constraint. No framework, no reference implementation — derived from the problem itself.</p>
+
+                <h2>The problem</h2>
+
+                <p>Input: a vector of <code>n</code> distinct elements. Output: every distinct ordering, exactly once. Total outputs: <code>n!</code>.</p>
+
+                <p>The first instinct is to try a swap pattern — move elements around and collect results. The problem is guaranteeing no duplicates and no gaps without knowing the correct pattern upfront. Random swapping requires tracking every previous result, which grows with <code>n!</code>. There has to be a structural guarantee instead.</p>
+
+                <h2>The invariant</h2>
+
+                <p>Before writing any code, ask: what must be true of every correct generator?</p>
+
+                <p>All <code>n</code> positions and all <code>n</code> elements are symmetric — no element is special, no position is special. By symmetry, each element must occupy each position the same number of times across all <code>n!</code> permutations:</p>
+
+                <pre><code>n! / n = (n - 1)!</code></pre>
+
+                <blockquote>
+                    Each element occupies each position exactly <code>(n − 1)!</code> times across all <code>n!</code> permutations.
+                </blockquote>
+
+                <p>This is the constraint the design must satisfy. It also reveals a recursive structure: if one element is fixed at a position for <code>(n − 1)!</code> permutations, the remaining <code>n − 1</code> elements must produce all their own permutations around it — the same problem, one size smaller.</p>
+
+                <h2>The engine: three positions</h2>
+
+                <p>The smallest useful base is <code>n = 3</code>. With a fixed swap rule — the anchor swaps with the element to its right; when it reaches the end, it swaps back with the first — six steps produce all <code>3! = 6</code> orderings of any three elements. Each element appears at each position exactly twice, which is <code>(3 − 1)! = 2</code>. Verifiable by enumeration.</p>
+
+                <p>This is the engine. Its contract: given any three distinct elements, emit all six orderings with each element at each position exactly twice.</p>
+
+                <h2>The scheduler</h2>
+
+                <p>For <code>n &gt; 3</code>, the remaining elements sit in a prefix outside the engine. After the engine completes one full cycle of six permutations, the scheduler swaps a new element from the prefix into the engine. A bookkeeping map per depth records which elements have already occupied that depth's fixed position — each element is allowed there exactly once. When all elements have been through a depth, the depth above advances and the depths below reset.</p>
+
+                <p>This is a mixed-radix counter. The total work decomposes as:</p>
+
+                <pre><code>n! = 3! × 4 × 5 × ... × n</code></pre>
+
+                <p>The engine is the base digit. Each outer depth multiplies by the number of available elements at that depth. The bookkeeping enforces the <code>(n − 1)!</code> invariant at every level.</p>
+
+                <h2>Verification</h2>
+
+                <p>I ran the algorithm for <code>n = 1</code> through <code>n = 11</code>, collecting results in an <code>unordered_set</code> and comparing the unique count against <code>n!</code>:</p>
+
+<pre><code>n=1  count=1         expected=1         -&gt; OK
+n=2  count=2         expected=2         -&gt; OK
+n=3  count=6         expected=6         -&gt; OK
+n=4  count=24        expected=24        -&gt; OK
+n=5  count=120       expected=120       -&gt; OK
+n=6  count=720       expected=720       -&gt; OK
+n=7  count=5040      expected=5040      -&gt; OK
+n=8  count=40320     expected=40320     -&gt; OK
+n=9  count=362880    expected=362880    -&gt; OK
+n=10 count=3628800   expected=3628800   -&gt; OK
+n=11 count=39916800  expected=39916800  -&gt; OK</code></pre>
+
+                <p>Source code: <a href="{permutation-generator-repo-url}" target="_blank" rel="noopener">{github-username}/permutation-generator</a>.</p>
+
+                <h2>Note on originality</h2>
+
+                <p>The algorithm belongs to a known family — factorial number system enumerations, of which Heap's algorithm is the most cited. Heap's bottoms out at <code>n = 2</code>; this one bottoms out at <code>n = 3</code> with a hand-designed engine. I did not know this when I wrote it. The reason to share it is not novelty — it is that the invariant was the starting point, not the code.</p>
+
+            </div>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p><a href="../index.html">← Back to home</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

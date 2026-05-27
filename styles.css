@@ -147,6 +147,23 @@ blockquote {
     flex-shrink: 0;
 }
 .nav-brand:hover { color: var(--accent); }
+.nav-toggle {
+    display: none;
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.45rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+.nav-toggle:hover { border-color: var(--border-strong); }
+.nav-toggle:focus-visible {
+    outline: 2px solid rgba(88, 166, 255, 0.45);
+    outline-offset: 2px;
+}
 .nav-links {
     display: flex;
     gap: var(--space-3);
@@ -574,17 +591,20 @@ blockquote {
     .post-title { font-size: 1.8rem; }
     .hero { padding: var(--space-5) 0 var(--space-4); }
     .section { padding: var(--space-5) 0; }
-    .nav-inner {
+    .nav-links {
+        display: none;
         flex-direction: column;
         align-items: center;
-        text-align: center;
-        gap: var(--space-2);
+        gap: 0.25rem;
+        font-size: 0.95rem;
+        width: 100%;
+        padding-top: var(--space-2);
+        margin-top: var(--space-2);
+        border-top: 1px solid var(--border);
     }
-    .nav-links {
-        justify-content: center;
-        gap: var(--space-2);
-        font-size: 0.85rem;
-    }
+    .nav-links a { display: block; padding: 0.5rem 0.25rem; }
+    .nav-toggle { display: inline-flex; }
+    .nav--open .nav-links { display: flex; }
     .projects-grid { grid-template-columns: 1fr; }
     .hero-tagline { font-size: 1rem; }
     .hero-cta { flex-direction: column; align-items: center; }

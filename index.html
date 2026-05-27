@@ -12,7 +12,10 @@
     <nav class="nav">
         <div class="container nav-inner">
             <a href="index.html" class="nav-brand">David Zdravkovic</a>
-            <ul class="nav-links">
+            <button class="nav-toggle" type="button" aria-controls="nav-links" aria-expanded="false">
+                Menu
+            </button>
+            <ul class="nav-links" id="nav-links">
                 <li><a href="#about">About</a></li>
                 <li><a href="#technologies">Technologies</a></li>
                 <li><a href="#projects">Projects</a></li>
@@ -222,6 +225,33 @@
             <p>© 2026 David Zdravkovic</p>
         </div>
     </footer>
+
+    <script>
+        (() => {
+            const nav = document.querySelector('.nav');
+            const toggle = document.querySelector('.nav-toggle');
+            const links = document.getElementById('nav-links');
+            if (!nav || !toggle || !links) return;
+
+            const setOpen = (open) => {
+                nav.classList.toggle('nav--open', open);
+                toggle.setAttribute('aria-expanded', String(open));
+            };
+
+            toggle.addEventListener('click', () => {
+                setOpen(!nav.classList.contains('nav--open'));
+            });
+
+            links.addEventListener('click', (e) => {
+                const a = e.target.closest('a');
+                if (a) setOpen(false);
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.matchMedia('(min-width: 641px)').matches) setOpen(false);
+            });
+        })();
+    </script>
 
 </body>
 </html>
